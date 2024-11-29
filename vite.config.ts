@@ -12,12 +12,15 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'icons': ['lucide-react'],
           'clerk': ['@clerk/clerk-react'],
           'monaco': ['@monaco-editor/react'],
-          'xterm': ['@xterm/xterm', 'xterm-addon-fit']
+          'xterm': ['@xterm/xterm', 'xterm-addon-fit'],
+          'utils': ['react-split']
         },
         globals: {
-          'react-split': 'Split'
+          'react-split': 'Split',
+          'lucide-react': 'LucideReact'
         }
       }
     }
@@ -33,7 +36,8 @@ export default defineConfig({
       'react-dom',
       'react-router-dom',
       '@clerk/clerk-react',
-      'react-split'
+      'react-split',
+      'lucide-react'
     ],
     exclude: ['@webcontainer/api']
   },

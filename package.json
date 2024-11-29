@@ -13,12 +13,12 @@
     "@clerk/clerk-react": "^4.30.0",
     "@monaco-editor/react": "^4.6.0",
     "@xterm/xterm": "^5.4.0",
+    "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0",
     "react-split": "^2.0.14",
-    "xterm-addon-fit": "^0.8.0",
-    "react-split": "^2.0.14"
+    "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
