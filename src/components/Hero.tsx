@@ -1,10 +1,13 @@
 import React from 'react';
 import { Search, Sparkles } from 'lucide-react';
-import { useClerk, useUser } from '@clerk/clerk-react';
+import { useAuthStore } from '../auth/store/authStore';
 
-export default function Hero() {
-  const { openSignUp } = useClerk();
-  const { isSignedIn } = useUser();
+interface HeroProps {
+  onGetStarted: () => void;
+}
+
+export default function Hero({ onGetStarted }: HeroProps) {
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <div className="relative min-h-screen pt-24 pb-16 px-4">
@@ -28,7 +31,7 @@ export default function Hero() {
         </p>
 
         <div className="max-w-2xl mx-auto relative">
-          {isSignedIn ? (
+          {isAuthenticated ? (
             <div className="glass-effect rounded-lg p-2 transition-all duration-300 hover:border-purple-500/30">
               <div className="flex items-center">
                 <Search className="w-5 h-5 text-gray-400 ml-2" />
@@ -44,7 +47,7 @@ export default function Hero() {
             </div>
           ) : (
             <button
-              onClick={() => openSignUp()}
+              onClick={onGetStarted}
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg transition-all duration-300 transform hover:scale-105 font-medium text-lg"
             >
               Start Building Free

@@ -1,27 +1,29 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ClerkProvider } from '@clerk/clerk-react';
-import { clerkConfig } from './config/clerk';
-import { PublicRoutes } from './routes/PublicRoutes';
-import { PrivateRoutes } from './routes/PrivateRoutes';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './auth/components/AuthProvider';
+import PrivateRoute from './auth/components/PrivateRoute';
+import PublicRoute from './auth/components/PublicRoute';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <ClerkProvider {...clerkConfig}>
-      <HashRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          <Route element={<PublicRoutes />}>
-            <Route path="/" element={<LandingPage />} />
-          </Route>
-          <Route element={<PrivateRoutes />}>
-            <Route path="/dashboard/*" element={<Dashboard />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/" element={
+            <PublicRoute>
+              <LandingPage />
+            </PublicRoute>
+          } />
+          <Route path="/dashboard/*" element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } />
         </Routes>
-      </HashRouter>
-    </ClerkProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

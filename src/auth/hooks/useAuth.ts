@@ -1,13 +1,14 @@
-import { useAuthStore } from '../auth/store/authStore';
+import { useClerk, useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
 export function useAuth() {
-  const { user, isAuthenticated, isLoading, logout } = useAuthStore();
+  const { user, isSignedIn, isLoaded } = useUser();
+  const { signOut } = useClerk();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
-      await logout();
+      await signOut();
       navigate('/', { replace: true });
     } catch (error) {
       console.error('Error signing out:', error);
@@ -16,8 +17,8 @@ export function useAuth() {
 
   return {
     user,
-    isAuthenticated,
-    isLoading,
+    isSignedIn,
+    isLoaded,
     signOut: handleSignOut
   };
 }
