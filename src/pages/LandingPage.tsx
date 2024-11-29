@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRedirect } from '../hooks/useRedirect';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
@@ -7,6 +8,8 @@ import Pricing from '../components/Pricing';
 import FAQ from '../components/FAQ';
 
 export default function LandingPage() {
+  useRedirect();
+
   return (
     <div className="min-h-screen bg-[#0D0D1E]">
       <Header />

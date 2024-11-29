@@ -1,39 +1,73 @@
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
-
 export async function generateCode(prompt: string): Promise<string> {
   try {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert full-stack developer. Generate production-ready code based on user requirements.
-          Follow these guidelines:
-          - Use TypeScript and React for frontend
-          - Include proper error handling
-          - Add comprehensive comments
-          - Follow best practices and design patterns
-          - Ensure code is clean, modular, and maintainable
-          - Include necessary types and interfaces
-          - Add proper documentation for functions and components`
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      model: "gpt-3.5-turbo",
-      temperature: 0.7,
-      max_tokens: 4096,
+    const response = await fetch('https://api.together.xyz/inference', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_TOGETHER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'codellama/CodeLlama-34b-Instruct-hf',
+        prompt: `You are an expert full-stack developer. Generate production-ready code based on the following requirements:
+        ${prompt}
+        
+        Follow these guidelines:
+        - Use TypeScript and React
+        - Include proper error handling
+        - Add comprehensive comments
+        - Follow best practices and design patterns
+        - Ensure code is clean, modular, and maintainable
+        - Include necessary types and interfaces
+        - Add proper documentation for functions and components`,
+        max_tokens: 2048,
+        temperature: 0.7,
+        top_p: 0.7,
+        top_k: 50,
+        repetition_penalty: 1.1
+      })
     });
 
-    return completion.choices[0].message.content || '';
+    if (!response.ok) {
+      throw new Error('Failed to generate code');
+    }
+
+    const data = await response.json();
+    return data.output.choices[0].text;
   } catch (error) {
     console.error('Error generating code:', error);
+    throw error;
+  }
+}
+
+export async function analyzeCode(code: string): Promise<string> {
+  try {
+    const response = await fetch('https://api.together.xyz/inference', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_TOGETHER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'codellama/CodeLlama-34b-Instruct-hf',
+        prompt: `You are a code review expert. Analyze the following code for potential improvements, bugs, and best practices:
+
+        ${code}`,
+        max_tokens: 1024,
+        temperature: 0.3,
+        top_p: 0.7,
+        top_k: 50,
+        repetition_penalty: 1.1
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to analyze code');
+    }
+
+    const data = await response.json();
+    return data.output.choices[0].text;
+  } catch (error) {
+    console.error('Error analyzing code:', error);
     throw error;
   }
 }

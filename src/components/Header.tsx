@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Code2 } from 'lucide-react';
-import { useClerk, useUser } from '@clerk/clerk-react';
-import NavLink from './navigation/NavLink';
-import NavButton from './navigation/NavButton';
-import MobileMenu from './navigation/MobileMenu';
+import { useNavigate } from 'react-router-dom';
+import Logo from './common/Logo';
+import SignInButton from './auth/SignInButton';
+import SignUpButton from './auth/SignUpButton';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigation } from '../services/navigation';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { openSignIn, openSignUp, signOut } = useClerk();
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+  const { goToDocumentation, goToSupport } = useNavigation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,10 +20,6 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleSignOut = () => {
-    signOut();
-  };
 
   return (
     <header className={`fixed top-2 left-4 right-4 z-50 transition-all duration-300 ease-out
@@ -34,47 +31,40 @@ export default function Header() {
                     ${isScrolled ? 'py-2' : 'py-3'}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2 group">
-              <img src="/gendev-logo.svg" alt="GenDev" className="w-8 h-8 transform group-hover:scale-110 transition-transform duration-300" />
-              <span className="text-lg font-semibold text-white">GenDev</span>
-            </div>
+            <Logo />
             
             <nav className="hidden md:flex items-center space-x-6">
-              <NavLink href="#home">Home</NavLink>
-              <NavLink href="#how-it-works">How it Works</NavLink>
-              <NavLink href="#features">Features</NavLink>
-              <NavLink href="#pricing">Pricing</NavLink>
-              <NavLink href="#faq">FAQ</NavLink>
+              <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
+              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
+              <button 
+                onClick={goToDocumentation}
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                Docs
+              </button>
+              <button 
+                onClick={goToSupport}
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                Support
+              </button>
             </nav>
 
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               {!isSignedIn ? (
                 <>
-                  <button
-                    onClick={() => openSignUp()}
-                    className="text-gray-300 hover:text-white transition-colors duration-300"
-                  >
-                    Sign Up
-                  </button>
-                  <NavButton onClick={() => openSignIn()}>
-                    Sign In
-                  </NavButton>
+                  <SignUpButton />
+                  <SignInButton />
                 </>
               ) : (
-                <NavButton onClick={handleSignOut}>
-                  Sign Out
-                </NavButton>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Dashboard
+                </button>
               )}
             </div>
-
-            <MobileMenu 
-              isOpen={isMobileMenuOpen}
-              onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              isAuthenticated={isSignedIn}
-              onSignIn={() => openSignIn()}
-              onSignUp={() => openSignUp()}
-              onSignOut={handleSignOut}
-            />
           </div>
         </div>
       </div>

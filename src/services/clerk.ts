@@ -1,16 +1,16 @@
-// src/config/clerk.ts
-import { ClerkProviderProps, dark } from '@clerk/clerk-react';
+import { ClerkProvider } from '@clerk/clerk-react';
 
-const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// Ensure the publishable key is properly formatted and valid
+export const publishableKey = 'pk_test_Y29vbC1nb29zZS00Mi5jbGVyay5hY2NvdW50cy5kZXYk';
 
 if (!publishableKey) {
   throw new Error('Missing Clerk Publishable Key');
 }
 
-export const clerkConfig: Partial<ClerkProviderProps> = {
+export const clerkConfig = {
   publishableKey,
   appearance: {
-    baseTheme: dark,
+    baseTheme: 'dark',
     variables: {
       colorPrimary: '#8B5CF6',
       colorTextOnPrimaryBackground: 'white',
