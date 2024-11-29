@@ -1,33 +1,34 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  build: {
-    sourcemap: true,
-    outDir: 'dist',
-    emptyOutDir: true,
-    rollupOptions: {
-      external: ['react-split'],
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'icons': ['lucide-react'],
-          'clerk': ['@clerk/clerk-react'],
-          'monaco': ['@monaco-editor/react'],
-          'xterm': ['@xterm/xterm', 'xterm-addon-fit'],
-          'utils': ['react-split']
-        },
-        globals: {
-          'react-split': 'Split',
-          'lucide-react': 'LucideReact'
-        }
-      }
-    }
-  },
   resolve: {
     alias: {
-      'react-split': 'react-split/dist/react-split.es.js'
+      '@': resolve(__dirname, './src')
+    }
+  },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      external: [
+        'react-split'
+      ],
+      output: {
+        manualChunks: {
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
+            '@clerk/clerk-react',
+            'zustand',
+            'lucide-react'
+          ],
+          monaco: ['@monaco-editor/react'],
+          xterm: ['@xterm/xterm', 'xterm-addon-fit']
+        }
+      }
     }
   },
   optimizeDeps: {
@@ -36,7 +37,7 @@ export default defineConfig({
       'react-dom',
       'react-router-dom',
       '@clerk/clerk-react',
-      'react-split',
+      'zustand',
       'lucide-react'
     ],
     exclude: ['@webcontainer/api']
