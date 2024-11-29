@@ -1,0 +1,16 @@
+{
+  "name": "GenDev - AI-Powered Web Development",
+  "short_name": "GenDev",
+  "description": "Generate full-stack web applications with AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D0D1E",
+  "theme_color": "#8B5CF6",
+  "icons": [
+    {
+      "src": "/gendev-logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

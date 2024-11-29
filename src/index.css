@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0D0D1E] overflow-x-hidden text-white;
+  }
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+  
+  .glass-effect-strong {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg shadow-purple-500/10;
+  }
+  
+  .purple-gradient {
+    @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20;
+  }
+}
+
+/* Monaco Editor Customization */
+.monaco-editor .margin {
+  background-color: #0D0D1E !important;
+}
+
+.monaco-editor .minimap {
+  background-color: #0D0D1E !important;
+}
+
+/* XTerm Customization */
+.xterm {
+  padding: 8px;
+}
+
+.xterm-viewport {
+  background-color: #0D0D1E !important;
+}
+
+/* Split.js Customization */
+.gutter {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.gutter:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.gutter.gutter-vertical {
+  cursor: row-resize;
+}
+
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+}
