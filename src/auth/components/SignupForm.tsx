@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { SignupCredentials } from '../types/auth';
 
-export default function SignupForm() {
+interface SignupFormProps {
+  onSuccess?: () => void;
+}
+
+export default function SignupForm({ onSuccess }: SignupFormProps) {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState<SignupCredentials>({
     name: '',
     email: '',
@@ -12,7 +18,13 @@ export default function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup(credentials);
+    try {
+      await signup(credentials);
+      onSuccess?.();
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
   };
 
   return (

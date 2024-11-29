@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { LoginCredentials } from '../types/auth';
 
-export default function LoginForm() {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+export default function LoginForm({ onSuccess }: LoginFormProps) {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: '',
@@ -11,7 +17,13 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(credentials);
+    try {
+      await login(credentials);
+      onSuccess?.();
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (
