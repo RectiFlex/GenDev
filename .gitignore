@@ -45,3 +45,5 @@ Thumbs.db
 .cache
 .eslintcache
 .stylelintcache
+# Sentry Config File
+.env.sentry-build-plugin
