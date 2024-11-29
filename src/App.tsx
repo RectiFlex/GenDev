@@ -1,11 +1,10 @@
-// App.tsx
+// src/App.tsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import { clerkConfig } from './config/clerk';
-import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
@@ -44,4 +43,3 @@ function App() {
 }
 
 export default App;
-
