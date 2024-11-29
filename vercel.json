@@ -24,10 +24,5 @@
       ]
     }
   ],
-  "env": {
-    "VITE_CLERK_PUBLISHABLE_KEY": "@clerk_publishable_key",
-    "VITE_TOGETHER_API_KEY": "@together_api_key",
-    "VITE_GOOGLE_ANALYTICS_ID": "@google_analytics_id",
-    "VITE_SENTRY_DSN": "@sentry_dsn"
   }
 }
