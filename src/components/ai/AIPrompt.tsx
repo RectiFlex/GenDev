@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Send, Sparkles, Loader2 } from 'lucide-react';
-import ChatMessage from './ChatMessage';
-import { Message } from '../../types';
-import { generateCode } from '../../services/ai';
 import { useStore } from '../../store/useStore';
-import { writeFile, installDependencies, startDevServer } from '../../services/webcontainer';
+import { generateCode } from '../../services/ai';
+import { Message } from '../../types';
 
 export default function AIPrompt() {
   const [prompt, setPrompt] = useState('');
@@ -13,9 +11,9 @@ export default function AIPrompt() {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'assistant',
-      content: 'Hello! I\'m your AI coding assistant. Describe what you want to build, and I\'ll help you create it in real-time. For example:\n\n"Create a React component for a todo list with TypeScript"',
-      timestamp: new Date(),
-    },
+      content: 'Hello! I\'m your AI coding assistant. Describe what you want to build, and I\'ll help you create it in real-time.',
+      timestamp: new Date()
+    }
   ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,7 +23,7 @@ export default function AIPrompt() {
     const userMessage: Message = {
       type: 'user',
       content: prompt,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -40,14 +38,10 @@ export default function AIPrompt() {
         [filePath]: generatedCode
       });
 
-      await writeFile(filePath, generatedCode);
-      await installDependencies();
-      await startDevServer();
-
       const aiResponse: Message = {
         type: 'assistant',
-        content: `I've generated the code and created ${fileName}. The changes are now live in the web container. You can see the results in the preview. Let me know if you need any modifications!`,
-        timestamp: new Date(),
+        content: `I've generated the code and created ${fileName}. The changes are now live in the editor.`,
+        timestamp: new Date()
       };
 
       setMessages(prev => [...prev, aiResponse]);
@@ -55,8 +49,8 @@ export default function AIPrompt() {
       console.error('Error:', error);
       const errorMessage: Message = {
         type: 'assistant',
-        content: 'Sorry, I encountered an error while generating and deploying the code. Please try again.',
-        timestamp: new Date(),
+        content: 'Sorry, I encountered an error while generating the code. Please try again.',
+        timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -66,15 +60,24 @@ export default function AIPrompt() {
   };
 
   return (
-    <div className="h-full flex flex-col glass-effect-strong rounded-lg mx-2">
-      <div className="p-4 border-b border-white/10 flex items-center space-x-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+    <div className="h-full flex flex-col glass-effect rounded-lg">
+      <div className="p-4 border-b border-white/10 flex items-center space-x-2">
         <Sparkles className="w-5 h-5 text-purple-400" />
         <h2 className="text-lg font-semibold">AI Assistant</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
-          <ChatMessage key={index} {...message} />
+          <div
+            key={index}
+            className={`flex space-x-3 ${message.type === 'assistant' ? 'items-start' : 'items-start'}`}
+          >
+            <div className={`p-3 rounded-lg ${
+              message.type === 'assistant' ? 'glass-effect' : 'bg-white/5'
+            }`}>
+              <p className="text-sm text-gray-200">{message.content}</p>
+            </div>
+          </div>
         ))}
         {isLoading && (
           <div className="flex items-center justify-center py-4">
@@ -83,7 +86,7 @@ export default function AIPrompt() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-white/10 bg-gradient-to-r from-purple-500/5 to-pink-500/5">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-white/10">
         <div className="relative">
           <textarea
             value={prompt}

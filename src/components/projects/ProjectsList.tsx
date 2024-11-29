@@ -1,34 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  FolderPlus, 
-  Code, 
-  Trash2, 
-  User,
-  FileCode,
-  Key,
-  Settings,
-  Zap,
-  Github,
-  HelpCircle,
-  ChevronRight
-} from 'lucide-react';
+import { FolderPlus, Code, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Project } from '../../types';
-import { useNavigate } from 'react-router-dom';
-import { useClerk } from '@clerk/clerk-react';
 
 interface ProjectsListProps {
   isCollapsed: boolean;
-  onSectionChange: (section: string) => void;
-  currentSection: string;
 }
 
-export default function ProjectsList({ isCollapsed, onSectionChange, currentSection }: ProjectsListProps) {
+export default function ProjectsList({ isCollapsed }: ProjectsListProps) {
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const { projects, addProject, setCurrentProject, currentProject, deleteProject } = useStore();
-  const navigate = useNavigate();
-  const { openUserProfile } = useClerk();
 
   const handleCreateProject = () => {
     if (!newProjectName.trim()) return;
@@ -45,82 +27,7 @@ export default function ProjectsList({ isCollapsed, onSectionChange, currentSect
     setCurrentProject(newProject);
     setNewProjectName('');
     setShowNewProjectDialog(false);
-    onSectionChange('main');
   };
-
-  const handleNavigation = (section: string) => {
-    switch (section) {
-      case 'profile':
-        openUserProfile();
-        break;
-      case 'api-keys':
-      case 'settings':
-      case 'upgrade':
-        onSectionChange(section);
-        break;
-      case 'github':
-        window.open('https://github.com/settings/connections', '_blank');
-        break;
-      case 'help':
-        window.open('/docs', '_blank');
-        break;
-      default:
-        onSectionChange('main');
-        break;
-    }
-  };
-
-  const navigationItems = [
-    {
-      id: 'projects',
-      icon: <FileCode className="w-5 h-5" />,
-      label: 'Projects',
-      onClick: () => handleNavigation('main'),
-      divider: false
-    },
-    {
-      id: 'profile',
-      icon: <User className="w-5 h-5" />,
-      label: 'Profile',
-      onClick: () => handleNavigation('profile'),
-      divider: false
-    },
-    {
-      id: 'api-keys',
-      icon: <Key className="w-5 h-5" />,
-      label: 'API Keys',
-      onClick: () => handleNavigation('api-keys'),
-      divider: true
-    },
-    {
-      id: 'settings',
-      icon: <Settings className="w-5 h-5" />,
-      label: 'Settings',
-      onClick: () => handleNavigation('settings'),
-      divider: false
-    },
-    {
-      id: 'upgrade',
-      icon: <Zap className="w-5 h-5" />,
-      label: 'Upgrade Plan',
-      onClick: () => handleNavigation('upgrade'),
-      divider: false
-    },
-    {
-      id: 'github',
-      icon: <Github className="w-5 h-5" />,
-      label: 'GitHub Integration',
-      onClick: () => handleNavigation('github'),
-      divider: true
-    },
-    {
-      id: 'help',
-      icon: <HelpCircle className="w-5 h-5" />,
-      label: 'Help & Support',
-      onClick: () => handleNavigation('help'),
-      divider: false
-    }
-  ];
 
   return (
     <div className="h-full bg-[#0D0D1E]/50 flex flex-col overflow-hidden border-r border-white/10">
@@ -175,70 +82,35 @@ export default function ProjectsList({ isCollapsed, onSectionChange, currentSect
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto">
-        {/* Projects Section */}
-        <div className="p-4 space-y-2">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className={`group rounded-lg glass-effect hover:bg-white/10 flex items-center 
-                       justify-between transition-all duration-300 ${
-                         currentProject?.id === project.id && currentSection === 'main' ? 'bg-white/10 ring-2 ring-purple-500' : ''
-                       } ${isCollapsed ? 'p-2' : 'p-3'}`}
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            className={`group rounded-lg glass-effect hover:bg-white/10 flex items-center 
+                     justify-between transition-all duration-300 ${
+                       currentProject?.id === project.id ? 'bg-white/10 ring-2 ring-purple-500' : ''
+                     } ${isCollapsed ? 'p-2' : 'p-3'}`}
+          >
+            <button
+              onClick={() => setCurrentProject(project)}
+              className="flex items-center space-x-3 flex-1 min-w-0"
             >
-              <button
-                onClick={() => {
-                  setCurrentProject(project);
-                  onSectionChange('main');
-                }}
-                className="flex items-center space-x-3 flex-1 min-w-0"
-              >
-                <Code className="w-5 h-5 text-purple-400 flex-shrink-0" />
-                {!isCollapsed && (
-                  <span className="truncate">{project.name}</span>
-                )}
-              </button>
+              <Code className="w-5 h-5 text-purple-400 flex-shrink-0" />
               {!isCollapsed && (
-                <button
-                  onClick={() => deleteProject(project.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/20 
-                           text-red-400 transition-all duration-300"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <span className="truncate">{project.name}</span>
               )}
-            </div>
-          ))}
-        </div>
-
-        {/* Navigation Items */}
-        <div className="p-4 space-y-1">
-          {navigationItems.map((item) => (
-            <React.Fragment key={item.id}>
+            </button>
+            {!isCollapsed && (
               <button
-                onClick={item.onClick}
-                className={`w-full rounded-lg flex items-center ${
-                  isCollapsed ? 'justify-center p-2' : 'justify-between p-3'
-                } hover:bg-white/10 transition-all duration-300 ${
-                  currentSection === item.id ? 'bg-white/10' : ''
-                }`}
+                onClick={() => deleteProject(project.id)}
+                className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/20 
+                         text-red-400 transition-all duration-300"
               >
-                <div className="flex items-center space-x-3">
-                  <div className="text-purple-400">{item.icon}</div>
-                  {!isCollapsed && (
-                    <>
-                      <span className="text-gray-300">{item.label}</span>
-                      <ChevronRight className="w-4 h-4 text-gray-500 ml-auto" />
-                    </>
-                  )}
-                </div>
+                <Trash2 className="w-4 h-4" />
               </button>
-              {item.divider && !isCollapsed && (
-                <div className="my-2 border-t border-white/10" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

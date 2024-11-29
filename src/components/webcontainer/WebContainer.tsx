@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Split from 'react-split';
 import { Editor } from '@monaco-editor/react';
 import Terminal from './Terminal';
-import { bootWebContainer } from '../../services/webcontainer/boot';
-import { useWebContainerStore } from '../../services/webcontainer/store';
 import FileExplorer from './FileExplorer';
-import { Loader2 } from 'lucide-react';
+import { useWebContainer } from '../../hooks/useWebContainer';
+import LoadingSpinner from '../common/LoadingSpinner';
+import { AlertCircle } from 'lucide-react';
 
 export default function WebContainer() {
-  const [isBooting, setIsBooting] = useState(true);
-  const { isBooted, serverUrl } = useWebContainerStore();
+  const { isBooted, instance, error } = useWebContainer();
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await bootWebContainer();
-      } catch (error) {
-        console.error('Failed to initialize WebContainer:', error);
-      } finally {
-        setIsBooting(false);
-      }
-    };
-
-    init();
-  }, []);
-
-  if (isBooting) {
+  if (error) {
     return (
-      <div className="h-full flex items-center justify-center bg-[#0D0D1E] rounded-lg glass-effect-strong mx-2">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-purple-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Initializing development environment...</p>
+      <div className="h-full flex items-center justify-center bg-[#0D0D1E] rounded-lg glass-effect">
+        <div className="text-center p-6">
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Failed to initialize development environment</h3>
+          <p className="text-gray-400 mb-4">{error.message}</p>
+          <p className="text-sm text-gray-500">
+            Please ensure you're using a supported browser and try refreshing the page.
+          </p>
         </div>
       </div>
     );
   }
 
+  if (!isBooted || !instance) {
+    return (
+      <div className="h-full flex items-center justify-center bg-[#0D0D1E] rounded-lg glass-effect">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full glass-effect-strong rounded-lg mx-2">
+    <div className="h-full glass-effect rounded-lg">
       <Split
         direction="vertical"
         sizes={[70, 30]}
