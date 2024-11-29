@@ -11,6 +11,15 @@
   ],
   "headers": [
     {
+      "source": "/(.*)\\.(js|css|svg|jpg|jpeg|png|gif|ico|json|woff2?)$",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
@@ -20,13 +29,20 @@
         {
           "key": "Cross-Origin-Opener-Policy",
           "value": "same-origin"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
       ]
     }
-  ],
-  "env": {
-    "POSTGRES_URL": "@postgres_url",
-    "VITE_TOGETHER_API_KEY": "@together_api_key",
-    "JWT_SECRET": "@jwt_secret"
-  }
+  ]
 }
