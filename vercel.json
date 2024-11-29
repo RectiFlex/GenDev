@@ -23,5 +23,10 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "POSTGRES_URL": "@postgres_url",
+    "VITE_TOGETHER_API_KEY": "@together_api_key",
+    "JWT_SECRET": "@jwt_secret"
+  }
 }
